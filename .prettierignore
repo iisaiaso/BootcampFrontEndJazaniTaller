@@ -1,0 +1,12 @@
+node_modules
+*.local
+package.json
+tsconfig.json
+tsconfig.node.json
+vite.config.ts
+yarn.lock
+.DS_Store
+*d.ts
+public
+index.html
+README.md
