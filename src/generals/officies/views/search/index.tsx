@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-
+import { Link } from 'react-router-dom';
 import { OfficeRepository } from '../../infrastructure';
 import { type OfficeResponse } from '../../domain';
 
@@ -10,23 +10,23 @@ import { Card } from 'react-bootstrap';
 import Table from 'react-bootstrap/Table';
 
 const index = (): JSX.Element => {
-	const [mineralTypes, mineralTypesSet] = useState<OfficeResponse[]>([]);
+	const [offices, officesSet] = useState<OfficeResponse[]>([]);
 
 	useEffect(() => {
-		void loadMineralTypes();
+		void loadOffices();
 	}, []);
 
-	const loadMineralTypes = async (): Promise<void> => {
+	const loadOffices = async (): Promise<void> => {
 		const response = await OfficeRepository.findAll();
 
-		mineralTypesSet(response.data);
+		officesSet(response);
 		console.log('response: ', response);
 	};
 	return (
 		<Row className="pt-2">
 			<Col xs={12}>
 				<Card>
-					<Card.Header>Listado de Tipo de Minerales</Card.Header>
+					<Card.Header>Listado de Offices</Card.Header>
 					<Card.Body>
 						<Table striped bordered hover>
 							<thead>
@@ -39,18 +39,18 @@ const index = (): JSX.Element => {
 								</tr>
 							</thead>
 							<tbody>
-								{mineralTypes.length > 0 &&
-									mineralTypes.map(mineralType => (
-										<tr key={mineralType.id}>
-											<td>{mineralType.id}</td>
-											<td>{mineralType.name}</td>
-											<td>{mineralType.description}</td>
+								{offices.length > 0 &&
+									offices.map(office => (
+										<tr key={office.id}>
+											<td>{office.id}</td>
+											<td>{office.name}</td>
+											<td>{office.description}</td>
 											<td>
-												<Badge pill bg={mineralType.state ? 'success' : 'danger'}>
-													{mineralType.state ? 'Activo' : 'Disable'}
+												<Badge pill bg={office.state ? 'success' : 'danger'}>
+													{office.state ? 'Activo' : 'Disable'}
 												</Badge>
 											</td>
-											<td>{mineralType.registrationDate}</td>
+											<td>{office.registrationDate}</td>
 										</tr>
 									))}
 							</tbody>

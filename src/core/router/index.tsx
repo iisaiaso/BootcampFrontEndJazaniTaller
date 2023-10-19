@@ -5,6 +5,9 @@ import Admin from '../layouts/Admin';
 import Home from '../../home';
 import OfficeSearch from '../../generals/officies/views/search';
 
+// Auth
+import Auth from '@/core/layouts/Auth';
+import Login from '@/Auth/login/views';
 const routes: RouteObject[] = [
 	{
 		path: '/',
@@ -17,6 +20,16 @@ const routes: RouteObject[] = [
 			{
 				path: '/officies',
 				element: <OfficeSearch />,
+			},
+		],
+	},
+	{
+		path: '/login',
+		element: <Auth />,
+		children: [
+			{
+				index: true,
+				element: <Login />,
 			},
 		],
 	},
