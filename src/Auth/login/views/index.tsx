@@ -10,11 +10,10 @@ import * as Yup from 'yup';
 import { type LoginRequest, type UserSecurityResponse } from '@/Auth/login/domain';
 import useLogin from '@/Auth/login/application/hooks/useLogin';
 import { LocalStorageSession } from '@/core/sessions';
-
-import { Link } from 'react-router-dom';
-import { Nav } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
 
 const index = (): JSX.Element => {
+	const navigate = useNavigate();
 	// Atributtes
 	const formik = useFormik<LoginRequest>({
 		initialValues: {
@@ -40,6 +39,7 @@ const index = (): JSX.Element => {
 		console.log('logi', response);
 
 		LocalStorageSession.saveAuthorization(response);
+		navigate('/officies');
 	};
 
 	return (
@@ -79,12 +79,6 @@ const index = (): JSX.Element => {
 							</Button>
 						</Form>
 					</Card.Body>
-
-					<Nav.Link href="/officies" className="text-center pb-2">
-						<Button type="submit" variant="danger">
-							ir a la lista de offices
-						</Button>
-					</Nav.Link>
 				</Card>
 			</Col>
 		</Row>

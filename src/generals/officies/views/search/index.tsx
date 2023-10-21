@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+
 import { OfficeRepository } from '../../infrastructure';
 import { type OfficeResponse } from '../../domain';
 
@@ -8,6 +8,10 @@ import Col from 'react-bootstrap/Col';
 import Badge from 'react-bootstrap/Badge';
 import { Card } from 'react-bootstrap';
 import Table from 'react-bootstrap/Table';
+
+// Date
+import { format } from 'date-fns';
+import { es } from 'date-fns/locale';
 
 const index = (): JSX.Element => {
 	const [offices, officesSet] = useState<OfficeResponse[]>([]);
@@ -50,7 +54,11 @@ const index = (): JSX.Element => {
 													{office.state ? 'Activo' : 'Disable'}
 												</Badge>
 											</td>
-											<td>{office.registrationDate}</td>
+											<td>
+												{format(new Date(office.registrationDate.toString()), 'dd MMMM yyyy', {
+													locale: es,
+												})}
+											</td>
 										</tr>
 									))}
 							</tbody>
