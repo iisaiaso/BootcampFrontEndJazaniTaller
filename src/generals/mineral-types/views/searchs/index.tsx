@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 
 import { MineralTypeRepository } from '../../infrastructure';
-import { type MineralTypeResponse } from '../../domain';
+import { type MineralTypeFilter, type MineralTypeResponse } from '../../domain';
 
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -11,21 +11,20 @@ import Table from 'react-bootstrap/Table';
 
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
+import { type RequestPagination } from '@/shared/domain';
+import usePaginateSearchMineralType from '../../application/hooks/usePaginateSearchMineralType';
 
 const index = (): JSX.Element => {
 	const [mineralTypes, mineralTypesSet] = useState<MineralTypeResponse[]>([]);
 
-	useEffect(() => {
-		void loadMineralTypes();
-	}, []);
+	const [mineralTypeFilter, setMineralTypeFilter] = useState<RequestPagination<MineralTypeFilter>>({
+		page: 1,
+		perPage: 10,
+	});
 
-	const loadMineralTypes = async (): Promise<void> => {
-		const response: any = await MineralTypeRepository.findAll();
-
-		mineralTypesSet(response);
-
-		console.log('response: ', response);
-	};
+	// React Query
+	const { data: mineralTypePaginated, isFetching } =
+		usePaginateSearchMineralType(mineralTypeFilter);
 
 	return (
 		<>
@@ -38,6 +37,7 @@ const index = (): JSX.Element => {
 								<thead>
 									<tr>
 										<th>#</th>
+										<th>ID</th>
 										<th>Nombre</th>
 										<th>Descripcion</th>
 										<th>Slug</th>
@@ -46,28 +46,26 @@ const index = (): JSX.Element => {
 									</tr>
 								</thead>
 								<tbody>
-									{mineralTypes.length > 0 &&
-										mineralTypes.map(mineralType => (
-											<tr key={mineralType.id}>
-												<td>{mineralType.id}</td>
-												<td>{mineralType.name}</td>
-												<td>{mineralType.description}</td>
-												<td>{mineralType.slug}</td>
-												<td>
-													<Badge pill bg={mineralType.state ? 'success' : 'danger'}>
-														{mineralType.state ? 'Activo' : 'Disable'}
-													</Badge>
-												</td>
+									{mineralTypePaginated?.data?.map((mineralType, index) => (
+										<tr key={mineralType.id}>
+											<td>{index + 1}</td>
+											<td>{mineralType.id}</td>
+											<td>{mineralType.name}</td>
+											<td>{mineralType.description}</td>
+											<td>{mineralType.slug}</td>
+											<td>
+												<Badge pill bg={mineralType.state ? 'success' : 'danger'}>
+													{mineralType.state ? 'Activo' : 'Disable'}
+												</Badge>
+											</td>
 
-												<td>
-													{format(
-														new Date(mineralType.registrationDate.toString()),
-														'dd MMMM yyyy',
-														{ locale: es },
-													)}
-												</td>
-											</tr>
-										))}
+											<td>
+												{format(new Date(mineralType.registrationDate.toString()), 'dd MMMM yyyy', {
+													locale: es,
+												})}
+											</td>
+										</tr>
+									))}
 								</tbody>
 							</Table>
 						</Card.Body>
